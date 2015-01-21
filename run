@@ -1,0 +1,315 @@
+#!/usr/bin/perl
+
+use lib $ENV{TDTlite};
+use Cwd;
+#require "format.pl";
+require "corpora.pl";
+
+my $version = 0.41;
+print "************************************************************\n";
+print "Run $version for TDTlite\n";
+print "************************************************************\n";
+
+my $project = cwd(); 
+my $corpus = "swbd";
+my $datadir = $project."/data/";
+my $patterndir = $project."/ptn/";
+my $resultdir = $project."/results/";
+my $corpusdir = $ENV{TGREP2ABLE}."/";
+if ($corpusdir eq "") { $corpusdir = "/p/hlp/corpora/TGrep2able/"; }
+my $patternfile_extension = ".ptn";
+my $datafile_extension = ".t2o";
+my @sub_patterns;
+
+my $EXTRACT = 0;
+my $JOIN = 0;
+my $COLLECT = 0;
+my $IMPORT = 0;
+my $CORPUS = 0;
+my $EMAIL = 0;
+my $ZIP = 0;
+my $NO_DELETE = 0;
+my $OPTFILE = 0;
+
+my $o = "-af"; # options that TGrep2 is run with (note: case-sensitivity)
+
+foreach $arg (@ARGV) {
+    if ($CORPUS) { $corpus = $arg; $CORPUS = 0; next; }
+    if ($EXTRACT_RESTRICTIONS) { $extract_restrictions = $arg; $EXTRACT_RESTRICTIONS = 0; next; }
+    if ($arg =~ m/^-(.*)/) {
+	#then argument is an option
+	$option = $1;
+
+#	print $option."\n";
+	if ($option eq "e" | $option eq "extract") { $EXTRACT = 1; }
+	elsif ($option eq "er" | $option eq "extractrestrictions") { $EXTRACT_RESTRICTIONS = 1; $EXTRACT = 1; }
+	elsif ($option eq "j" | $option eq "join") { $JOIN = 1; }
+	elsif ($option eq "c" | $option eq "corpus") { $CORPUS = 1; }
+	elsif ($option eq "collect") { $COLLECT = 1; }
+        elsif ($option eq "k") { $KEEP = 1; }
+	elsif ($option eq "m" | $option eq "message") { $EMAIL = 1; }
+	elsif ($option eq "i" | $option eq "import") { $IMPORT = 1; }
+	elsif ($option eq "o") { $OPTFILE = 1; }
+	elsif ($option eq "z" | $option eq "gzip") { $ZIP = 1; }
+	elsif ($option eq "nd" | $option eq "nodelete") { $NO_DELETE = 1; }
+	elsif ($option eq "h" | $option eq "help") { 
+	    print "\nUsage: run (-option)* sub_pattern*\n\nThe following options are  available:\n";
+	    print "-h[elp]\tPrints help\n";
+	    print "-c[orpus]\t followed by corpus tag (default: newswbd)\n";
+	    print "-e[xtract]\t extract all matches for the patterns specified in MACRO files 'MACRO-sub_pattern_1 ... MACRO-sub_pattern_n' from the corpus specified by '-c corpus_tag' (default: 'no'). If no subpatterns are specified, only one version of all patterns will be extracted (the one specified in the file MACROS".$patternfile_extension.").\n";
+	    print "-e[extract]r[restrictions]\t implies extract, but also limits extraction to specified types of patterns. Currently recognized are: cat,cont,count,string,xml,pos,parse.\n";
+	    print "-j[oin]\t join the information of all sub_patterns into one file per TGrep2 pattern. These files will be stored in the directory '".$datadir."corpus_name' (default: 'no').\n";
+	    print "-collect\t collects the information from the TGrep2 data files in the directory '".$datadir."corpus_name' (default: 'no').\n";
+	    print "-i[import]\t import the collected information into an R file (not implemented yet).\n";
+            print "-k[eep]\t does not delete collectData after using it.\n";
+	    print "-n[o]d[elete]\t turns of deletion of already existing data files\n\n";
+		print "-o\t gets options for the collectData script from an options file.\n\n";	    
+	} else { print "See -h for help.\n"; }
+    } 
+    else { push @sub_patterns, "-".$arg; }
+}
+
+# if not pattern was specified, assume that the default MACRO 
+# file for the specified corpus should be taken
+if ($#sub_patterns == -1) { $sub_patterns[0]= ""; } 
+# test whether subpatterns were specified as full MACRO file names or only as patterns
+# if the former is the case, extract the pattern name, since that is what's used in 
+# the remainder of the script
+for ($i= 0; $i <= $#sub_patterns; $i++) { if ($sub_patterns[$i] =~ /^.*MACROS(.*)${patternfile_extension}$/i) { $sub_patterns[$i] = $1; } }
+
+if (-e "../ptn_".$corpus) { $patterndir = "../ptn_".$corpus."/"; }
+
+$corpusfile = getCorpusFile($corpus,$corpusdir);
+
+print "$corpusfile";
+
+system_verbose("rm -f ".$corpus.".log");
+if ($EXTRACT) { foreach (@sub_patterns) { run_patterns($_) } };
+
+if ($JOIN) { 
+#   my $datadir = $datadir.$corpus."/";
+    if ($NO_DELETE != 1) {
+	system_verbose("rm -r ".$datadir.$corpus."/");
+	system_verbose("mkdir ".$datadir.$corpus."/");
+    }
+
+    opendir DIR, $datadir.$corpus.$sub_patterns[0]."/";
+    while ($content = readdir(DIR)) {
+        chomp($content);
+
+	print "$content\n";
+
+        if ($content =~ /.${datafile_extension}$/) {
+            my $collect = "";
+            foreach (@sub_patterns) { $collect .= " ".$datadir.$corpus.$_."/".$content;}
+            system_verbose("cat".$collect." > ".$datadir.$corpus."/".$content)
+        }
+    }
+    closedir DIR;
+
+}
+
+if ($OPTFILE) {
+    if (-e $project."/collectData") { system_verbose("rm $project/collectData"); }
+    system_verbose("python \$TDTlite/getOptions.py \$SHELL $project $corpus");
+    system_verbose("chmod 755 $project/collectData");
+    system_verbose("cd $project");
+    system_verbose("./collectData");
+    if ($KEEP != 1) { system_verbose("rm collectData"); } 
+    system_verbose("cd \$TDTlite");
+}
+
+if ($COLLECT) { 
+    if(-e $corpus."collectData") { system_verbose("./".$corpus."collectData ".$corpus); } 
+    else { system_verbose("./collectData ".$corpus); } 
+}
+
+if ($IMPORT) { 
+    if(-e $corpus."Rimport.sh") { system_verbose("./".$corpus."Rimport.sh ".$corpus); }
+    else { system_verbose("./Rimport.sh ".$corpus); }
+}
+
+if ($ZIP) {
+    my $resultfile = $resultdir.$corpus.".tab";
+    if (-e $resultfile) { system_verbose("gzip ".$resultfile); }
+    else { warn "No result file $resultfile found.\n"; }
+}
+
+if ($EMAIL) {
+    my $sendmail = "/usr/sbin/sendmail -t";
+    my $reply_to = "Reply-to: foo\@bar.org\n"; 
+    my $subject = "run job finished for corpus: $corpus";
+    my $content = "Corpus: $corpus\nExtraction: $EXTRACT\nJoin: $JOIN\nCollect: $COLLECT\nPatterns: $subpatterns\n"; 
+
+    open(SENDMAIL, "|$sendmail") or die "Cannot open $sendmail: $!"; 
+    print SENDMAIL $reply_to; 
+    print SENDMAIL $subject; 
+    print SENDMAIL $send_to; 
+    print SENDMAIL "Content-type: text/plain\n\n"; 
+    print SENDMAIL $content; 
+    close(SENDMAIL); 
+}
+
+sub run_patterns {
+    my $s = @_[0];
+    my $macrofile = $project."/MACROS".$s.$patternfile_extension;
+    my $macros = "MACROS".$s.$patternfile_extension;
+
+    # Some corpora need special MACROFILES because not all annotations are available for them
+    if ($corpus =~ /^(bncw|bncs|brown|wsj|swbd|swbdext)/i) {
+        if (-e $project."/".$1.$macros) { $macrofile = $project."/".$1.$macros; }
+	else { warn "No ${1}MACROS file found. This could be a problem.\n"; }
+    }
+
+    my $datadir = $datadir.$corpus.$s."/";
+
+    if ($NO_DELETE != 1) {
+	system_verbose("rm -r ".$datadir);
+	system_verbose("mkdir ".$datadir);
+    }
+    if ($extract_restrictions eq "") {
+        catfactor($macrofile, $datadir, $patterndir."CatVar");
+    	contfactor($macrofile, $datadir, $patterndir."LenVar");
+        contfactor($macrofile, $datadir, $patterndir."CountVar");
+   	contfactor($macrofile, $datadir, $patterndir."StringVar");
+    ctxtfactor($macrofile, $datadir, $patterndir."CtxtVar");   	
+   	ufactor($macrofile, $datadir, $patterndir."UVar");
+    	posfactor($macrofile, $datadir, $patterndir."NodeVar");
+    	parsefactor($macrofile, $datadir, $patterndir."ParseVar");
+    }
+    else {
+	if($extract_restrictions =~ /cat/) { catfactor($macrofile, $datadir, $patterndir."CatVar"); }
+	if ($extract_restrictions =~ /cont/) { contfactor($macrofile, $datadir, $patterndir."ContVar"); }
+	if ($extract_restrictions =~ /count/) { contfactor($macrofile, $datadir, $patterndir."CountVar"); }
+	if ($extract_restrictions =~ /string/) { contfactor($macrofile, $datadir, $patterndir."StringVar"); }
+	if ($extract_restrictions =~ /ctxt/) { ctxtfactor($macrofile, $datadir, $patterndir."CtxtVar"); }
+	if ($extract_restrictions =~ /xml/) { ufactor($macrofile, $datadir, $patterndir."UVar"); }
+	if ($extract_restrictions =~ /pos/) { posfactor($macrofile, $datadir, $patterndir."NodeVar"); }
+	if ($extract_restrictions =~ /parse/) { parsefactor($macrofile, $datadir, $patterndir."ParseVar"); }
+    }
+}
+
+
+sub datafile_name {
+	my ($name) = @_;
+	$name =~ s/(.*)${patternfile_extension}$/\1${datafile_extension}/gi;
+	return $name;
+}
+
+
+sub catfactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+        chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+            my $newname = datafile_name($content);
+            system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\n' $macrofile $ptndir/$content > $datadir/$newname");
+        }
+    }
+    closedir DIR;
+}
+
+
+sub contfactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+	chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+            my $newname = datafile_name($content);
+	    system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\t%t=print=\\n' $macrofile $ptndir/$content > $datadir/$newname");
+	}
+    }
+    closedir DIR;
+
+}
+
+
+sub ufactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+        chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+            my $newname = datafile_name($content);
+            system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\t%u=print=\\n' $macrofile $ptndir/$content > $datadir/$newname");
+        }
+    }
+    closedir DIR;
+
+}
+
+
+sub posfactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+        chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+            my $newname = datafile_name($content);
+            system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\t%u=pos=\\n' $macrofile $ptndir/$content > $datadir/$newname");
+        }
+    }
+    closedir DIR;
+
+}
+
+sub ctxtfactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+   	$line = ""; 
+        chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+	my $newname = datafile_name($content);
+	my @filename = split(/\./,$content);
+	my @context = split(/-/,$filename[0]);
+	if ($context[1] eq "b") {
+		for ($count = $context[0]; $count >= 1; $count--) {
+			$line = $line."###%t$count$context[1] ";
+		}
+	} 
+	if ($context[1] eq "a") {
+                for ($count = 1; $count <= $context[0]; $count++) {
+                    $line = $line."###%t$count$context[1] ";
+                }
+	}
+	system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\t$line\\n' $macrofile $ptndir/$content > $datadir/$newname");
+    }
+}
+closedir DIR;
+}
+
+sub parsefactor {
+    my ($macrofile, $datadir, $ptndir) = @_;
+
+    opendir DIR, $ptndir;
+    while ($content = readdir(DIR)) {
+        chomp($content);
+
+        if ($content =~ /.${patternfile_extension}$/) {
+            my $newname = datafile_name($content);
+            system_verbose("tgrep2 -c $corpusfile $o -m '%xm\\t%=print=\\n' $macrofile $ptndir/$content > $datadir/$newname");
+        }
+    }
+    closedir DIR;
+
+}  
+
+
+sub system_verbose {
+    my $command = $_[0];
+    warn "$command\n";
+    system("$command");
+}
