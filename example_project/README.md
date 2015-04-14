@@ -1,23 +1,21 @@
-# TDT test
+# TDTlite test
 
-## Getting started
+Follow the instructions below to check that everything is set up for you to use TDTlite.
 
-Start by navigating to this directory. On `corn.stanford.edu`:
+Start by copying the example project that's included in TDTlite to your home directory. From your home directory, type:
 
-`cd /afs/ir/data/linguistic-data/TDTlite/`
+`cp -r example_project .`
 
-Make sure the `data` and `results` paths in the `options` file are set to the `data` and `results` subdirectories of this directory. On `corn.stanford.edu` you don't need to change anything.
+Navigate into `example_project`.
+
+`cd example_project`
+
+Open the `options` file and set the `data` and `results` paths to the `data` and `results` subdirectories of `example_project` (use `pwd` to find out the path to the current directory).  
 
 To test whether everything is running as it should:
 
 `run -c swbd -e -o`
 
-This should have the effect of creating a database called `swbd.tab` in `results`. If you don't have the right permissions on `corn.stanford.edu`, you will get a lot of "Permission denied" errors. In that case, copy `example_project` to a place where you have write access (e.g., your home directory).
+This should have the effect of creating a database called `swbd.tab` in `results`. 
 
-`cp -r example_project ~/`
 
-Then navigate to your home directory.
-
-`cd`
-
-Set the `data` and `results` paths in `options` (use `pwd` to find out the path to the current directory), then try running the above `run` command again.
