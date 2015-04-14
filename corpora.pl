@@ -6,9 +6,7 @@ sub getCorpusFile {
 #	print "$corpusdir\n";
     my %corpusfiles = ('swbd' => 'swbd.t2c.gz',
 		       'swbdext' => 'sw.backtrans_011410.t2c.gz',	
-                       'bnc' => 'BNC.parsed.t2c.gz',
-                       'bncs' => 'BNC_spoken.parsed.t2c.gz',
-                       'bncw' => 'BNC_written.parsed.t2c.gz',
+                       'bnc' => 'bnc-charniak-parses.t2c.gz',
                        'arab' => 'arabic-collapsed.t2c.gz',
                        'wsj' => 'wsj_mrg.t2c.gz',
                        'brown' => 'brown.t2c.gz',

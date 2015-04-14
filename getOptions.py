@@ -17,6 +17,7 @@ oplines=[]
 commands=dict(data=0,results=0,corpus=0,init=0,add=0)
 bash=sys.argv[1]
 corpus=str(sys.argv[3])
+fileending=".t2o"
 
 def out(towrite):
 # writes to collectData
@@ -40,55 +41,61 @@ def getVariable(v, corpus):
 		raise Exception("missing argument(s)")
 	if v[0] == "StringVar":
 		if len(v) == 3:
-			out("	addStringVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+			out("	addStringVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
 		elif len(v) == 2:
-			out("	 addStringVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))	
+			out("	 addStringVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))	
 	elif v[0] == "NodeVar":
 		if len(v) == 3:
-			out("	addNodeVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+			out("	addNodeVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
 		elif len(v) == 2:
-			out("	addNodeVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))
+			out("	addNodeVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))
 	elif v[0] == "ParseVar":
 		if len(v) == 3:
-			out("	addParseVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+			out("	addParseVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
 		elif len(v) == 2:
-			out("	addParseVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))
+			out("	addParseVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))
 	elif v[0] == "LengthVar":
 		if len(v) == 3:
-			out("	 addLengthVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+			out("	 addLengthVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
 		elif len(v) == 2:
-			out("	 addLengthVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))	
+			out("	 addLengthVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))	
 	elif v[0] == "NiteIDVar":
                 if len(v) == 3:
-                        out("   addNiteID.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+                        out("   addNiteID.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
                 elif len(v) == 2:
-                        out("   addNiteID.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))		
+                        out("   addNiteID.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))		
 	elif v[0] == "CategoricalVar":
 		argus=[]
 		cats=v[2].split(",")
 		for c in cats:
 			argus.append(c.split(":")[0])
-			argus.append("$Pdata/"+c.split(":")[1])
+			argus.append("$Pdata/"+c.split(":")[1]+fileending)
 		out("	 addCategoricalVar.pl -oc %s -f %s %s\n"%(corpus,v[1]," ".join(argus)))
 	elif v[0] == "CountVar":
 		if len(v) == 3:
-			out("	 addCountVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))
+			out("	 addCountVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))
 		elif len(v) == 2:			
-			out("	 addCountVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))
+			out("	 addCountVar.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))
 	elif v[0] == "LemmaVar":
 		if len(v) == 3:
-			out("	 addLemma.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]))	
+			out("	 addLemma.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[2]+fileending))	
 		elif len(v) == 2:			
-			out("	 addLemma.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]))	
+			out("	 addLemma.pl -roc %s -f %s=$Pdata/%s\n"%(corpus,v[1],v[1]+fileending))	
 	elif v[0] == "Phonology":
 		factors = ",".join(v[1:])
 		out("	 addPhonology.pl -roc %s -f %s\n"%(corpus,factors))
 	elif v[0] == "InfoDensity":
-		out("	 addInformationDensity.pl -roc %s -f %s 3\n"%(corpus,v[1]))
+		out("	 addInformationDensity.pl -roc %s -f %s 3\n"%(corpus,v[1]+fileending))
 	elif v[0] == "CondProb":
-		out("	 addConditionalProbability.pl -c %s -f %s\n"%(corpus,v[1]))	
+		out("	 addConditionalProbability.pl -c %s -f %s\n"%(corpus,v[1]+fileending))	
 	elif v[0] == "Frequency":
-		out("	addUnigram.pl -c %s -f %s\n"%(corpus,v[1]))	
+		out("	addUnigram.pl -c %s -f %s\n"%(corpus,v[1]+fileending))	
+	elif v[0] == "SocialVar":
+		# make sure social information is available 
+		if corpus in ["swbd"]:
+			out("	addConversationInfo.pl -roc %s -f %s\n"%(corpus,v[1]+fileending))
+		else:
+			print "social/conversation meta information is not available for this corpus"
 	else:
 		raise Exception("variable type not recognized: %s"%v[0])		
 
