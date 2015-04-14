@@ -26,6 +26,6 @@ Set the following environment variables in your profile:
 
 Then add the TDTlite directory to your `PATH`. For example, on `corn.stanford.edu`:
 
-`setenv PATH $PATH:/afs/ir/data/linguistic-data/TDTlite/`
+`setenv PATH /afs/ir/data/linguistic-data/TDTlite:$PATH`
 
 With this in place, you should be able to use the basic `run` command from within a project directory. Follow the instructions in `example_project` to test that everything is set up properly.
