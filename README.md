@@ -1,5 +1,9 @@
 # The TGrep2 Database Tools
 
+The TGrep2 Database Tools (lite) are a collection of (mostly perl, and some python, and some shell) scripts that allow you to extract data from large corpora (if you already have the corpora in a tgrep2able format) and combine the output into a comprehensive database in a format suitable for importing into your favorite statistical analysis program. These tools are still very much underdocumented, but see the user manual in `docs` for more information, or get in touch via [email](jdegen@stanford.edu) 
+
+These scripts were written for the most part by T. Florian Jaeger (University of Rochester) in the early 2000s. Later, Neal Snider (Nuance Communications), Austin Frank (Riot Games), and Judith Degen (Stanford University) began contributing.
+
 ## Getting started
 
 Set the following environment variables in your profile:
