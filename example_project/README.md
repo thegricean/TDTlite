@@ -1,6 +1,6 @@
 # TDTlite test
 
-Follow the instructions below to check that everything is set up for you to use TDTlite.
+On `corn.stanford.edu`, follow the instructions below to check that everything is set up for you to use TDTlite.
 
 Start by copying the example project that's included in TDTlite to your home directory. From your home directory, type:
 
