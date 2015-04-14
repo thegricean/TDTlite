@@ -2,7 +2,7 @@
 
 ## Getting started
 
-Make sure the `data` directoy path in the `options` file is set to the `data` directory of this directory. From `corn.stanford.edu` you don't need to change anything.
+Make sure the `data` and `results` paths in the `options` file are set to the `data` and `results` subdirectories of this directory. On `corn.stanford.edu` you don't need to change anything.
 
 To test whether everything is running as it should:
 
