@@ -5,6 +5,7 @@
 Set the following environment variables in your profile:
 
 - `TGREP2_CORPUS` Set this to the TGrep2 default corpus. If you run TGrep2 without a corpus argument, it will run on this corpus. For example, on `corn.stanford.edu`:
+
 `setenv TGREP2_CORPUS $TGREP2ABLE/swbd.t2c.gz`
 
 - `TGREP2ABLE` Set this to the directory that contains the TGrep2 corpora. For example, on `corn.stanford.edu`:
