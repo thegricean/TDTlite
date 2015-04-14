@@ -168,7 +168,7 @@ else: #default to csh
 	out("setenv Presults %s\n"%results)
 	
 out("echo Creating new corpus file %s.tab\n"%corpus)
-out("	initDatabase.pl -roc %s --files $Pdata/%s\n\n"%(corpus,idfile))
+out("	initDatabase.pl -roc %s --files $Pdata/%s\n\n"%(corpus,idfile+".t2o"))
 out("echo Beginning data extraction...\n")
 out("echo\n")
 for v in variables:
