@@ -34,15 +34,15 @@ We'll go through each in turn.
 
 Start by logging on to the server:
 
-`ssh SUNETID@corn.stanford.edu`
+`$ ssh SUNETID@corn.stanford.edu`
 
 You'll need to enter your password. By default, you will now be in your home directory. The first step is to make sure all your environment variables are set so TDTlite knows where to access the corpora, etc. Check to see whether you have set any of the necessary environment variables. For example:
 
-`echo $TGREP2ABLE`
+`$ echo $TGREP2ABLE`
 
 To set environment variables, first open your .cshrc file in the vim editor:
 
-`vim .cshrc`
+`$ vim .cshrc`
 
 Scroll to the bottom by pressing `Shift + G`. Open for editing by pressing `a`. Copy the following lines and paste them into the file:
 
@@ -66,11 +66,46 @@ The last line adds the TDTlite directory to your `PATH` so you can run the basic
 
 If you just updated your `.cshrc` file, you need to source it in order to actually set the variables:
 
-`source .cshrc`
+`$ source .cshrc`
 
 Now, testing whether your environment variables are set should yield a path to the correct location:
 
-`echo $TGREP2ABLE`
+`$ echo $TGREP2ABLE`
 
 ## Copying the TDTlite example project and setting project specific paths
+
+It's good practice to have a `projects` directory that you have all your (TDTlite or otherwise) projects organized in. Create this directory in your home directory:
+
+`$ mkdir projects`
+
+Now move into `projects` and copy the TDTlite example_project to your current location:
+
+`$ cp -r $TDTlite/example_project/ .`
+
+Test to see wether it was properly copied:
+
+`$ ls`
+
+You should see an item `example_project`. Move into it:
+
+`$ cd example_project`
+`$ ls`
+
+You will see three directories: `data`, `ptn`, and `results`. More on those in a bit. There are also two files, `MACROS.ptn` and `options`. The last thing left to do before we can run TDTlite is to specify project-specific paths in the `options` file. First, you need to find out the path to your home directory:
+
+`$ pwd`
+
+Copy the path, then open `options` in `vim`:
+
+`$ vim options`
+
+At the top of the file you will see two path assignments: one for `data` and one for `results`. These need to be replaced with your project-specific paths. Do so by moving your cursor to the first character after `=` and pressing `X` until all the text you want to replace is deleted. Then press `I` and paste the path that you copied previously. Once you've replaced both, hit `Esc`, then `Shift+:`, type `wq`, and hit `Enter`. You are now ready to run TDTlite.
+
+## Run TDTlite
+
+Running TDTlite is incredibly simple once everything is set up. Simply type, from the top level of the example_project:
+
+`run -c swbd -e -o`
+
+This will run TDTlite on the Switchboard corpus (this is what `-c swbd` means), extract data from Switchboard using all the tgrep2 patterns in `ptn` (this is what `-e` means), and build a database of all the extracted data in `results` named `swbd.tab` (this is what `-o` means). You can copy `swbd.tab` onto your computer and import it into your favorite statistical analysis program (e.g., R, Excel). For more information about the way `run` works, see the [TDTlite User Manual](https://github.com/thegricean/TDTlite/blob/master/docs/tdt_manual.pdf).
 
