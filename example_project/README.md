@@ -20,7 +20,17 @@ This should have the effect of creating a database called `swbd.tab` in `results
 
 # Sociogrammar (LIN 255C) instructions
 
-This provides step by step instructions for logging on to the server, setting all the necessary environment variables, and running an example TDTlite project on `corn.stanford.edu`.
+This provides step by step instructions for logging on to the server, setting all the necessary environment variables, and running an example TDTlite project on `corn.stanford.edu`. There are three general steps:
+
+1. Log on and set environment variables (or check that they are set).
+
+2. Copy the TDTlite example project into your home directory and set your project specific paths.
+
+3. Run TDTlite!
+
+We'll go through each in turn.
+
+## Setting environment variables
 
 Start by logging on to the server:
 
@@ -54,4 +64,13 @@ Once the lines are pasted, hit `Esc`, then the combination `Shift+:`. Type `wq` 
 
 The last line adds the TDTlite directory to your `PATH` so you can run the basic `run` command from anywhere. 
 
+If you just updated your `.cshrc` file, you need to source it in order to actually set the variables:
+
+`source .cshrc`
+
+Now, testing whether your environment variables are set should yield a path to the correct location:
+
+`echo $TGREP2ABLE`
+
+## Copying the TDTlite example project and setting project specific paths
 
