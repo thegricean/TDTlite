@@ -105,7 +105,7 @@ At the top of the file you will see two path assignments: one for `data` and one
 
 Running TDTlite is incredibly simple once everything is set up. Simply type, from the top level of the example_project:
 
-`run -c swbd -e -o`
+`$ run -c swbd -e -o`
 
 This will run TDTlite on the Switchboard corpus (this is what `-c swbd` means), extract data from Switchboard using all the tgrep2 patterns in `ptn` (this is what `-e` means), and build a database of all the extracted data in `results` named `swbd.tab` (this is what `-o` means). You can copy `swbd.tab` onto your computer and import it into your favorite statistical analysis program (e.g., R, Excel). For more information about the way `run` works, see the [TDTlite User Manual](https://github.com/thegricean/TDTlite/blob/master/docs/tdt_manual.pdf).
 
