@@ -36,7 +36,7 @@ To set environment variables, first open your .cshrc file in the vim editor:
 
 Scroll to the bottom by pressing `Shift + G`. Open for editing by pressing `a`. Copy the following lines and paste them into the file:
 
-```shell
+```bash
 setenv TGREP2ABLE /afs/ir/data/linguistic-data/Treebank/tgrep2able/
 setenv TGREP2_CORPUS $TGREP2ABLE/swbd.t2c.gz
 setenv TDTlite /afs/ir/data/linguistic-data/TDTlite/
@@ -44,7 +44,7 @@ setenv TDT_DATABASES /afs/ir/data/linguistic-data/TDTlite/databases
 setenv PATH /afs/ir/data/linguistic-data/TDTlite:$PATH
 ```
 
-Some explanations of the environment variables you just set:
+Once the lines are pasted, hit `Esc`, then the combination `Shift+:`. Type `wq` and `Enter`, which saves your work and exits the program. Some explanations of the environment variables you just set:
 
 `TGREP2_CORPUS` Set this to the TGrep2 default corpus. If you run TGrep2 without a corpus argument, it will run on this corpus. 
 
