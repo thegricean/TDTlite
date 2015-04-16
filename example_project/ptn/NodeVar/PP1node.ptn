@@ -1,0 +1,1 @@
+@VP=VP1 < (@PP=pos !<< -NONE- $.. (@PP=PP2 !<< -NONE- !$ (@PP != =pos) !,, (@TERMINAL ,, =pos !>> (@DISFL >> =VP1))))

@@ -10,4 +10,6 @@ add StringVar PP2
 add LengthVar PP2Length=PP2
 add CategoricalVar PNP1cat=fullnp:NP1,pronoun:Pronoun1
 add CategoricalVar PNP2cat=fullnp:NP1,pronoun:Pronoun2
+add NodeVar PP1node
+add NodeVar PP2node
 add SocialVar ID
