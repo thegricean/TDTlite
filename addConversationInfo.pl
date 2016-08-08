@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use lib $ENV{TDT};
+use lib $ENV{TDTlite};
 require "format.pl";
 require "resources.pl";
 

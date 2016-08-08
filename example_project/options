@@ -1,0 +1,15 @@
+data=/afs/ir/data/linguistic-data/TDTlite/example_project/data/
+results=/afs/ir/data/linguistic-data/TDTlite/example_project/results/
+
+init ID
+
+add StringVar Sentence
+add StringVar PP1
+add LengthVar PP1Length=PP1
+add StringVar PP2
+add LengthVar PP2Length=PP2
+add CategoricalVar PNP1cat=fullnp:NP1,pronoun:Pronoun1
+add CategoricalVar PNP2cat=fullnp:NP1,pronoun:Pronoun2
+add NodeVar PP1node
+add NodeVar PP2node
+add SocialVar ID
