@@ -121,6 +121,7 @@ elsif ($corpus =~ /^bncs/i) { $corpus = "bncs"; }
 elsif ($corpus =~ /^bncw/i) { $corpus = "bncw"; }  
 elsif ($corpus =~ /^bnc/i) { $corpus = "bnc"; }
 elsif ($corpus =~ /^negra/i) { $corpus = "negra"; }
+elsif ($corpus =~ /^wiki/i) { $corpus = "wiki";}
 else { $corpus = "unknown"; }
 #if (exists($options{factors})) { $factor_name = $options{factors}[0]; }        # setting the default for $factor_name
 ########################################################################################

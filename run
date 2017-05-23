@@ -156,7 +156,7 @@ sub run_patterns {
     my $macros = "MACROS".$s.$patternfile_extension;
 
     # Some corpora need special MACROFILES because not all annotations are available for them
-    if ($corpus =~ /^(bncw|bncs|brown|wsj|swbd|swbdext)/i) {
+    if ($corpus =~ /^(bncw|bncs|brown|wsj|swbd|swbdext|wiki)/i) {
         if (-e $project."/".$1.$macros) { $macrofile = $project."/".$1.$macros; }
 	else { warn "No ${1}MACROS file found. This could be a problem.\n"; }
     }

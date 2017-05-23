@@ -14,6 +14,7 @@ sub getCorpusFile {
                        'ice' => 'icegb.t2c.gz',
                        'negra' => 'negra.t2c.gz',
                        'tiger' => 'tiger.t2c.gz',
+		       'wiki' => 'wikipedia.t2c.gz',
                        'ycoe' => 'ycoe.t2c.gz');
 
     return $corpusdir.$corpusfiles{$corpus};
